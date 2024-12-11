@@ -1,1 +1,2 @@
 # CUD
+python main.py
