@@ -1,5 +1,7 @@
 import requests
 import re
+import yaml
+import pandas as pd
 
 def find_patterns(text):
     """
@@ -30,9 +32,30 @@ def make_request(url, params=None, headers=None):
         print(f"An error occurred: {e}")
         return None
 
-url="https://cloud.google.com/skus/sku-groups/a3-mega-on-demand-vms"
-response = make_request(url).text
-matches = find_patterns(response)
+with open('config.yaml', 'r') as file:
+    data = yaml.safe_load(file)
 
-print(matches)
-print(len(matches))
+urls = data["config"]["urls"]
+
+df = pd.read_csv(data["config"]["filename"])
+queries = df["SKU ID"].to_list()
+
+storage = []
+for url in urls:
+    response = make_request(url).text
+    matches = find_patterns(response)
+    storage = storage + matches
+
+
+ansT = []
+ansF = []
+for query in queries:
+    if query in storage:
+        ansT.append(query)
+    else:
+        ansF.append(query)
+
+if data["config"]["mode"]:
+    print(ansT)
+else:
+    print(ansF)

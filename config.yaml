@@ -1,0 +1,5 @@
+config:
+  urls:
+    - https://cloud.google.com/skus/sku-groups/a3-mega-on-demand-vms
+  mode: True
+  filename: "data.csv"
