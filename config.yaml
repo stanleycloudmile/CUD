@@ -1,5 +1,6 @@
 config:
   urls:
     - https://cloud.google.com/skus/sku-groups/a3-mega-on-demand-vms
+    - https://cloud.google.com/skus/sku-groups/on-demand-gpus
   mode: True
   filename: "data.csv"

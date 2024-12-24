@@ -38,7 +38,10 @@ with open('config.yaml', 'r') as file:
 urls = data["config"]["urls"]
 
 df = pd.read_csv(data["config"]["filename"])
-queries = df["SKU ID"].to_list()
+df = df.dropna()
+sku_dict = df.set_index('SKU ID')[['SKU description', 'Subtotal ($)']].apply(list, axis=1).to_dict()
+
+# queries = df["SKU ID"].to_list()
 
 storage = []
 for url in urls:
@@ -47,15 +50,21 @@ for url in urls:
     storage = storage + matches
 
 
-ansT = []
-ansF = []
-for query in queries:
+ansT = {}
+ansF = {}
+for query in sku_dict.keys():
     if query in storage:
-        ansT.append(query)
+        ansT[query] = sku_dict[query]
     else:
-        ansF.append(query)
+        ansF[query] = sku_dict[query]
 
 if data["config"]["mode"]:
-    print(ansT)
+    print("True:")
+    for i, key in enumerate(ansT.keys()):
+        print(f"\t{i} - {key}: {ansT[key]}")
+    print(f"Total: {len(ansT)}")
 else:
-    print(ansF)
+    print("False:")
+    for i, key in enumerate(ansF.keys()):
+        print(f"\t{i} - {key}: {ansF[key]}")
+    print(f"Total: {len(ansF)}")
